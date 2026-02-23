@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boulder Dash Lite</title>
+    <style>
+        :root {
+            --bg: #111827;
+            --panel: #1f2937;
+            --text: #e5e7eb;
+            --accent: #22d3ee;
+            --danger: #ef4444;
+            --ok: #22c55e;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: radial-gradient(circle at 30% 20%, #1f2937 0%, #0b1020 65%);
+            color: var(--text);
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            padding: 16px;
+        }
+
+        .game {
+            width: fit-content;
+            max-width: calc(100vw - 32px);
+            background: color-mix(in srgb, var(--panel) 90%, #000);
+            border: 1px solid #374151;
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+            overflow: auto;
+        }
+
+        .hud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 16px;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 14px;
+            font-size: 14px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        button {
+            border: 1px solid #4b5563;
+            background: #111827;
+            color: var(--text);
+            border-radius: 8px;
+            padding: 7px 10px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            border-color: var(--accent);
+        }
+
+        canvas {
+            width: auto;
+            max-width: none;
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid #4b5563;
+            background: #05070e;
+            image-rendering: pixelated;
+            display: block;
+            margin: 0 auto;
+        }
+
+        #message {
+            min-height: 22px;
+            margin-top: 8px;
+            font-size: 14px;
+            color: #cbd5e1;
+        }
+
+        .danger {
+            color: var(--danger);
+        }
+
+        .ok {
+            color: var(--ok);
+        }
+    </style>
+</head>
+<body>
+    <div class="game">
+        <div class="hud">
+            <div class="stats">
+                <div>Level: <strong id="level">1</strong></div>
+                <div>Score: <strong id="score">0</strong></div>
+                <div>Gems Left: <strong id="gems">0</strong></div>
+                <div>FPS: <strong id="fps">0</strong></div>
+            </div>
+            <div class="controls">
+                <button id="restartBtn">Restart Level</button>
+                <button id="nextBtn">Next Level</button>
+            </div>
+        </div>
+        <canvas id="game" width="624" height="432"></canvas>
+        <div id="message">Move: Arrow keys or WASD. Collect all gems, then reach the green exit.</div>
+    </div>
+    <script type="module" src="../js/boulder-dash/main.js"></script>
+</body>
+</html>
+
