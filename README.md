@@ -1,6 +1,7 @@
 # VibeDash
 A small browser game inspired by Boulder Dash, built with plain HTML/CSS/JavaScript.
 Apart from this line, everything has been prompted into existence.
+This is a just-for-fun test/prototype and is not intended to be a finished game.
 
 ## Features
 

@@ -1,3 +1,5 @@
+This project is a just-for-fun test/prototype and is not intended to be a finished game.
+
 Use individual PNG files in this folder.
 
 Location:
