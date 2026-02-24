@@ -7,7 +7,16 @@ export const MOVE_ANIM_MS = 190;
 export const ENEMY_MOVE_MS = PHYSICS_MS * 2;
 export const MAX_FRAME_MS = 100;
 
-export const TILE_ASSET_BASE = "../assets/boulder-dash";
+export const TILE_ASSET_BASE_CANDIDATES = [
+    "../assets/boulder-dash",
+    "../assets",
+    "./assets/boulder-dash",
+    "./assets",
+    "/assets/boulder-dash",
+    "/assets",
+    "assets/boulder-dash",
+    "assets"
+];
 export const TILE_ASSET_FILES = {
     empty: "tile_empty.png",
     wall: "tile_wall.png",

@@ -7,7 +7,7 @@ import {
     MOVE_ANIM_MS,
     ENEMY_MOVE_MS,
     MAX_FRAME_MS,
-    TILE_ASSET_BASE,
+    TILE_ASSET_BASE_CANDIDATES,
     TILE_ASSET_FILES,
     TILE_ASSET_KEY_BY_TILE,
     FOREGROUND_TILE_TYPES,
@@ -65,6 +65,7 @@ let fpsSmoothed = 0;
 const inputState = { up: false, down: false, left: false, right: false };
 const inputOrder = { up: 0, down: 0, left: 0, right: 0 };
 let inputCounter = 0;
+let resolvedTileAssetBase = null;
 
 function createBoolGrid(w, h, fill = false) {
     return Array.from({ length: h }, () => Array(w).fill(fill));
@@ -512,15 +513,33 @@ function createBoolGrid(w, h, fill = false) {
             });
         }
 
-        function loadTileAssets() {
-            const entries = Object.entries(TILE_ASSET_FILES);
-            const jobs = entries.map(([key, filename]) => loadTileAssetFrames(key, filename));
-            Promise.all(jobs).then((results) => {
-                const loadedCount = results.reduce((n, ok) => n + (ok ? 1 : 0), 0);
-                if (loadedCount > 0) {
-                    rebuildTileSprites();
-                    worldDirty = true;
+        async function resolveTileAssetBase() {
+            if (resolvedTileAssetBase) return resolvedTileAssetBase;
+            const probeFile = TILE_ASSET_FILES.boulder || Object.values(TILE_ASSET_FILES)[0];
+            for (const base of TILE_ASSET_BASE_CANDIDATES) {
+                const probe = await loadImage(`${base}/${probeFile}`);
+                if (probe) {
+                    resolvedTileAssetBase = base;
+                    console.info(`[assets] using base path: ${resolvedTileAssetBase}`);
+                    return resolvedTileAssetBase;
                 }
+            }
+            resolvedTileAssetBase = TILE_ASSET_BASE_CANDIDATES[0];
+            console.warn("[assets] no PNG asset path resolved, using fallback rendering.");
+            return resolvedTileAssetBase;
+        }
+
+        function loadTileAssets() {
+            resolveTileAssetBase().then(() => {
+                const entries = Object.entries(TILE_ASSET_FILES);
+                const jobs = entries.map(([key, filename]) => loadTileAssetFrames(key, filename));
+                Promise.all(jobs).then((results) => {
+                    const loadedCount = results.reduce((n, ok) => n + (ok ? 1 : 0), 0);
+                    if (loadedCount > 0) {
+                        rebuildTileSprites();
+                        worldDirty = true;
+                    }
+                });
             });
         }
 
@@ -531,18 +550,19 @@ function createBoolGrid(w, h, fill = false) {
         }
 
         async function loadTileAssetFrames(key, filename) {
+            const base = resolvedTileAssetBase || TILE_ASSET_BASE_CANDIDATES[0];
             const { stem, ext } = splitExt(filename);
             const frames = [];
-            const first = await loadImage(`${TILE_ASSET_BASE}/${stem}_0${ext}`);
+            const first = await loadImage(`${base}/${stem}_0${ext}`);
             if (first) {
                 frames.push(first);
                 for (let i = 1; i < 64; i++) {
-                    const frame = await loadImage(`${TILE_ASSET_BASE}/${stem}_${i}${ext}`);
+                    const frame = await loadImage(`${base}/${stem}_${i}${ext}`);
                     if (!frame) break;
                     frames.push(frame);
                 }
             } else {
-                const single = await loadImage(`${TILE_ASSET_BASE}/${filename}`);
+                const single = await loadImage(`${base}/${filename}`);
                 if (single) frames.push(single);
             }
 
